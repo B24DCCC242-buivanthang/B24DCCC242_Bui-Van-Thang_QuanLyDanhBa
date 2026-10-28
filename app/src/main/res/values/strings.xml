@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Quản lý danh bạ</string>
+
+    <!-- Login -->
+    <string name="login_title">Danh bạ</string>
+    <string name="login_subtitle">Đăng nhập để tiếp tục</string>
+    <string name="username_label">Tên đăng nhập</string>
+    <string name="username_hint">Nhập tên đăng nhập</string>
+    <string name="password_label">Mật khẩu</string>
+    <string name="password_hint">••••••</string>
+    <string name="btn_login">Đăng nhập</string>
+    <string name="login_sample_account">Tài khoản mẫu: admin / 123456</string>
+    <string name="err_empty_login">Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu</string>
+    <string name="err_wrong_login">Sai tên đăng nhập hoặc mật khẩu</string>
+
+    <!-- Main -->
+    <string name="main_title">Danh bạ của tôi</string>
+    <string name="stat_title">Thống kê</string>
+    <string name="stat_total_label">Tổng liên hệ</string>
+    <string name="stat_fav_label">Yêu thích</string>
+    <string name="contact_list_title">Danh sách liên hệ</string>
+    <string name="contact_hint_click">(nhấn vào một liên hệ để xem chi tiết)</string>
+    <string name="btn_add_contact">+ Thêm liên hệ</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">Thêm liên hệ</string>
+    <string name="fullname_label">Họ và tên</string>
+    <string name="fullname_hint">Ví dụ: Nguyễn Văn An</string>
+    <string name="phone_label">Số điện thoại</string>
+    <string name="phone_hint">Ví dụ: 0901234567</string>
+    <string name="group_label">Nhóm</string>
+    <string name="gender_label">Giới tính</string>
+    <string name="gender_male">Nam</string>
+    <string name="gender_female">Nữ</string>
+    <string name="gender_other">Khác</string>
+    <string name="favorite_checkbox">Thêm vào yêu thích</string>
+    <string name="note_label">Ghi chú</string>
+    <string name="note_hint">Nhập ghi chú (nhiều dòng)...</string>
+    <string name="btn_save_contact">Lưu liên hệ</string>
+    <string name="err_empty_name">Vui lòng nhập họ và tên</string>
+    <string name="err_invalid_phone">Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0</string>
+    <string name="err_phone_exists">Số điện thoại này đã tồn tại trong danh bạ</string>
+
+    <!-- Detail Contact -->
+    <string name="detail_contact_title">Chi tiết liên hệ</string>
+    <string name="btn_call">Gọi điện</string>
+    <string name="btn_back">Quay lại</string>
+    <string name="btn_delete">Xóa liên hệ</string>
+    <string name="confirm_delete_title">Xác nhận xóa</string>
+    <string name="confirm_delete_msg">Bạn có chắc chắn muốn xóa liên hệ này không?</string>
+    <string name="cancel">Hủy</string>
+    <string name="delete">Xóa</string>
+</resources>
