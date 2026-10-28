@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private View rootLayout;
     private View headerLayout;
     private View bottomLayout;
+    private ImageView btnLogout;
 
     private TextView tvTotalContacts;
     private TextView tvFavoriteContacts;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Contact> contactList;
     private ContactAdapter adapter;
+    private DatabaseHelper dbHelper;
 
     // Launcher mở màn hình Thêm liên hệ và nhận kết quả trả về
     private final ActivityResultLauncher<Intent> addContactLauncher =
@@ -45,10 +49,14 @@ public class MainActivity extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Contact newContact = (Contact) result.getData().getSerializableExtra(EXTRA_CONTACT);
                     if (newContact != null) {
+                        // Lưu liên hệ mới vào SQLite Database
+                        long newId = dbHelper.insertContact(newContact);
+                        newContact.setId((int) newId);
+
                         contactList.add(newContact);
                         adapter.notifyDataSetChanged();
                         updateStatistics();
-                        Toast.makeText(this, "Thêm liên hệ thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Thêm liên hệ thành công và đã lưu CSDL!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -63,14 +71,21 @@ public class MainActivity extends AppCompatActivity {
 
                     if (ACTION_DELETE.equals(action)) {
                         if (position >= 0 && position < contactList.size()) {
+                            Contact contactToDelete = contactList.get(position);
+                            // Xóa khỏi SQLite Database
+                            dbHelper.deleteContact(contactToDelete);
+
                             contactList.remove(position);
                             adapter.notifyDataSetChanged();
                             updateStatistics();
-                            Toast.makeText(this, "Đã xóa liên hệ!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Đã xóa liên hệ khỏi CSDL!", Toast.LENGTH_SHORT).show();
                         }
                     } else if (ACTION_UPDATE.equals(action)) {
                         Contact updatedContact = (Contact) data.getSerializableExtra(EXTRA_CONTACT);
                         if (position >= 0 && position < contactList.size() && updatedContact != null) {
+                            // Cập nhật thông tin vào SQLite Database
+                            dbHelper.updateContact(updatedContact);
+
                             contactList.set(position, updatedContact);
                             adapter.notifyDataSetChanged();
                             updateStatistics();
@@ -84,9 +99,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbHelper = new DatabaseHelper(this);
+
         initViews();
         handleWindowInsets();
-        initSampleData();
+        initContactList();
         setupRecyclerView();
         setupEvents();
         updateStatistics();
@@ -96,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         rootLayout = findViewById(R.id.rootLayout);
         headerLayout = findViewById(R.id.headerLayout);
         bottomLayout = findViewById(R.id.bottomLayout);
+        btnLogout = findViewById(R.id.btnLogout);
         tvTotalContacts = findViewById(R.id.tvTotalContacts);
         tvFavoriteContacts = findViewById(R.id.tvFavoriteContacts);
         rvContacts = findViewById(R.id.rvContacts);
@@ -132,34 +150,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Khởi tạo 3 liên hệ mẫu theo đúng yêu cầu đề bài
+     * Tải danh sách liên hệ từ SQLite Database (đã có sẵn dữ liệu mẫu hoặc dữ liệu đã sửa trước đó)
      */
-    private void initSampleData() {
-        contactList = new ArrayList<>();
-        contactList.add(new Contact(
-                "Nguyễn Văn An",
-                "0901234567",
-                "Bạn bè",
-                "Nam",
-                false,
-                ""
-        ));
-        contactList.add(new Contact(
-                "Trần Thị Bình",
-                "0912345678",
-                "Gia đình",
-                "Nữ",
-                true,
-                "Chị gái, hay gọi buổi tối"
-        ));
-        contactList.add(new Contact(
-                "Lê Minh Châu",
-                "0987654321",
-                "Công việc",
-                "Khác",
-                false,
-                ""
-        ));
+    private void initContactList() {
+        contactList = dbHelper.getAllContacts();
     }
 
     private void setupRecyclerView() {
@@ -186,6 +180,22 @@ public class MainActivity extends AppCompatActivity {
             intent.putStringArrayListExtra(EXTRA_EXISTING_PHONES, existingPhones);
             addContactLauncher.launch(intent);
         });
+
+        // Nút Đăng xuất: cho phép đăng xuất để kiểm tra dữ liệu sau khi đăng nhập lại
+        btnLogout.setOnClickListener(v -> confirmLogout());
+    }
+
+    private void confirmLogout() {
+        new AlertDialog.Builder(this)
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất không?\nMọi thông tin liên hệ đã chỉnh sửa đều đã được lưu vào cơ sở dữ liệu.")
+                .setPositiveButton("Đăng xuất", (dialog, which) -> {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     /**

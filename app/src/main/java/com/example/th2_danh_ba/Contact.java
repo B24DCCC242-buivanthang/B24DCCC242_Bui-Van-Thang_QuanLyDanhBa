@@ -3,6 +3,7 @@ package com.example.th2_danh_ba;
 import java.io.Serializable;
 
 public class Contact implements Serializable {
+    private int id;
     private String name;
     private String phone;
     private String group;
@@ -20,6 +21,24 @@ public class Contact implements Serializable {
         this.gender = gender;
         this.isFavorite = isFavorite;
         this.note = note;
+    }
+
+    public Contact(int id, String name, String phone, String group, String gender, boolean isFavorite, String note) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.group = group;
+        this.gender = gender;
+        this.isFavorite = isFavorite;
+        this.note = note;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
