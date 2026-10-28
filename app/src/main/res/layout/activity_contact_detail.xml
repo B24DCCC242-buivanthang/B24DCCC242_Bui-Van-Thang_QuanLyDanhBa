@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light_gray"
@@ -7,27 +8,31 @@
 
     <!-- Header Toolbar -->
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
+        android:minHeight="56dp"
         android:background="@color/teal_button"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="20dp">
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="8dp">
 
         <ImageView
             android:id="@+id/btnHeaderBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/btn_back"
-            android:padding="8dp"
+            android:padding="12dp"
             android:src="@drawable/ic_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:text="@string/detail_contact_title"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -249,7 +254,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="24dp"
                     android:background="@drawable/bg_button_danger"
                     android:text="@string/btn_delete"
                     android:textAllCaps="false"

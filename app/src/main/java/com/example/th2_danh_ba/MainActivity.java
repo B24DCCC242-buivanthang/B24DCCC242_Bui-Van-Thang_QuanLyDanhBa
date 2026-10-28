@@ -2,6 +2,7 @@ package com.example.th2_danh_ba;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -9,6 +10,9 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_DELETE = "DELETE";
     public static final String ACTION_UPDATE = "UPDATE";
     public static final String EXTRA_EXISTING_PHONES = "EXISTING_PHONES";
+
+    private View rootLayout;
+    private View headerLayout;
+    private View bottomLayout;
 
     private TextView tvTotalContacts;
     private TextView tvFavoriteContacts;
@@ -77,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initViews();
+        handleWindowInsets();
         initSampleData();
         setupRecyclerView();
         setupEvents();
@@ -84,10 +93,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        rootLayout = findViewById(R.id.rootLayout);
+        headerLayout = findViewById(R.id.headerLayout);
+        bottomLayout = findViewById(R.id.bottomLayout);
         tvTotalContacts = findViewById(R.id.tvTotalContacts);
         tvFavoriteContacts = findViewById(R.id.tvFavoriteContacts);
         rvContacts = findViewById(R.id.rvContacts);
         btnAddContact = findViewById(R.id.btnAddContact);
+    }
+
+    /**
+     * Hạ phần Header xuống dưới Status Bar và đệm đáy tránh phím điều hướng hệ thống
+     */
+    private void handleWindowInsets() {
+        int padTopDefault = (int) (12 * getResources().getDisplayMetrics().density);
+        int padBottomDefault = (int) (16 * getResources().getDisplayMetrics().density);
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            if (headerLayout != null) {
+                headerLayout.setPadding(
+                        headerLayout.getPaddingLeft(),
+                        insets.top + padTopDefault,
+                        headerLayout.getPaddingRight(),
+                        padTopDefault
+                );
+            }
+            if (bottomLayout != null) {
+                bottomLayout.setPadding(
+                        bottomLayout.getPaddingLeft(),
+                        bottomLayout.getPaddingTop(),
+                        bottomLayout.getPaddingRight(),
+                        insets.bottom + padBottomDefault
+                );
+            }
+            return windowInsets;
+        });
     }
 
     /**

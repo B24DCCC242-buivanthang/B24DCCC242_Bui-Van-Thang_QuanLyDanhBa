@@ -3,6 +3,7 @@ package com.example.th2_danh_ba;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,11 +15,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 
 public class AddContactActivity extends AppCompatActivity {
 
+    private View rootLayout;
+    private View headerLayout;
     private ImageView btnHeaderBack;
     private EditText etName;
     private EditText etPhone;
@@ -39,12 +45,15 @@ public class AddContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_contact);
 
         initViews();
+        handleWindowInsets();
         setupSpinner();
         loadExistingPhones();
         setupEvents();
     }
 
     private void initViews() {
+        rootLayout = findViewById(R.id.rootLayout);
+        headerLayout = findViewById(R.id.headerLayout);
         btnHeaderBack = findViewById(R.id.btnHeaderBack);
         etName = findViewById(R.id.etName);
         etPhone = findViewById(R.id.etPhone);
@@ -56,6 +65,27 @@ public class AddContactActivity extends AppCompatActivity {
         cbFavorite = findViewById(R.id.cbFavorite);
         etNote = findViewById(R.id.etNote);
         btnSaveContact = findViewById(R.id.btnSaveContact);
+    }
+
+    /**
+     * Hạ Toolbar xuống dưới Status Bar để nút Back và tiêu đề không bị vướng trần
+     */
+    private void handleWindowInsets() {
+        int padTopDefault = (int) (8 * getResources().getDisplayMetrics().density);
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            if (headerLayout != null) {
+                headerLayout.setPadding(
+                        headerLayout.getPaddingLeft(),
+                        insets.top + padTopDefault,
+                        headerLayout.getPaddingRight(),
+                        padTopDefault
+                );
+            }
+            v.setPadding(0, 0, 0, insets.bottom);
+            return windowInsets;
+        });
     }
 
     private void setupSpinner() {

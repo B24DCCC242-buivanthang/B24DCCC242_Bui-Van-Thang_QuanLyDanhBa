@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -13,9 +14,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class ContactDetailActivity extends AppCompatActivity {
 
+    private View rootLayout;
+    private View headerLayout;
     private ImageView btnHeaderBack;
     private FrameLayout layoutDetailAvatar;
     private TextView tvDetailAvatarLetter;
@@ -39,11 +45,14 @@ public class ContactDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact_detail);
 
         initViews();
+        handleWindowInsets();
         loadContactData();
         setupEvents();
     }
 
     private void initViews() {
+        rootLayout = findViewById(R.id.rootLayout);
+        headerLayout = findViewById(R.id.headerLayout);
         btnHeaderBack = findViewById(R.id.btnHeaderBack);
         layoutDetailAvatar = findViewById(R.id.layoutDetailAvatar);
         tvDetailAvatarLetter = findViewById(R.id.tvDetailAvatarLetter);
@@ -57,6 +66,27 @@ public class ContactDetailActivity extends AppCompatActivity {
         btnCall = findViewById(R.id.btnCall);
         btnBack = findViewById(R.id.btnBack);
         btnDelete = findViewById(R.id.btnDelete);
+    }
+
+    /**
+     * Hạ Toolbar xuống dưới Status Bar để nút Back và tiêu đề không bị vướng trần
+     */
+    private void handleWindowInsets() {
+        int padTopDefault = (int) (8 * getResources().getDisplayMetrics().density);
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            if (headerLayout != null) {
+                headerLayout.setPadding(
+                        headerLayout.getPaddingLeft(),
+                        insets.top + padTopDefault,
+                        headerLayout.getPaddingRight(),
+                        padTopDefault
+                );
+            }
+            v.setPadding(0, 0, 0, insets.bottom);
+            return windowInsets;
+        });
     }
 
     private void loadContactData() {
